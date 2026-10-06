@@ -52,8 +52,16 @@ def cmd_exit(shell, args):
     return "exit"
 
 
+def cmd_conf_dump(shell, args):
+    """Выводит параметры эмулятора в формате ключ=значение."""
+    if args:
+        raise CommandError("conf-dump: команда не принимает аргументов")
+    return shell.config.dump()
+
+
 COMMANDS = {
     "ls": cmd_ls,
     "cd": cmd_cd,
     "exit": cmd_exit,
+    "conf-dump": cmd_conf_dump,
 }

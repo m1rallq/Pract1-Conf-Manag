@@ -17,7 +17,7 @@ class ShellWindow:
         """Создаёт окно для заданной оболочки."""
         self.shell = shell
         self.root = tk.Tk()
-        self.root.title(f"Эмулятор оболочки — VFS: {shell.vfs_name}")
+        self.root.title(f"Эмулятор оболочки — VFS: {shell.config.vfs_name}")
         self.root.geometry(WINDOW_SIZE)
         self._build_output()
         self._build_input()
@@ -66,6 +66,16 @@ class ShellWindow:
         if self.shell.exit_requested:
             self.root.after(0, self.root.destroy)
 
-    def run(self):
-        """Запускает главный цикл окна."""
+    def run(self, startup_lines=(), script_path=None):
+        """Показывает стартовые строки, выполняет скрипт и запускает окно."""
+        for line in startup_lines:
+            self.print(line)
+        if script_path:
+            self.root.after(0, self._run_script, script_path)
         self.root.mainloop()
+
+    def _run_script(self, script_path):
+        """Выполняет стартовый скрипт с выводом в окно."""
+        self.print(f"--- выполнение скрипта {script_path} ---")
+        self.shell.run_script(script_path, self.print)
+        self._close_if_exit()
