@@ -1,5 +1,5 @@
 #!/bin/bash
-# Запуск эмулятора: ./run.sh
+# Запуск эмулятора: ./run.sh [--vfs PATH] [--log FILE] [--script FILE]
 # Запуск тестов:   ./run.sh test
 cd "$(dirname "$0")" || exit 1
 PYTHON=python3

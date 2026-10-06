@@ -1,5 +1,5 @@
 @echo off
-rem Запуск эмулятора: run.bat
+rem Запуск эмулятора: run.bat [--vfs PATH] [--log FILE] [--script FILE]
 rem Запуск тестов:   run.bat test
 cd /d "%~dp0"
 if "%1"=="test" (
