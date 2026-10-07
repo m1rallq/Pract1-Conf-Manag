@@ -13,7 +13,7 @@ class ParseError(Exception):
     """Ошибка разбора командной строки (например, незакрытая кавычка)."""
 
 
-class _Tokenizer:
+class Tokenizer:
     """Посимвольный разборщик строки на слова."""
 
     def __init__(self):
@@ -67,7 +67,7 @@ def parse_line(line):
     Raises:
         ParseError: если кавычка не закрыта.
     """
-    tokenizer = _Tokenizer()
+    tokenizer = Tokenizer()
     for char in line:
         if not tokenizer.feed(char):
             break
