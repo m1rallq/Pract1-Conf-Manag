@@ -3,7 +3,7 @@
 import os
 import tempfile
 import unittest
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as element_tree
 
 from config import Config, parse_args
 from shell import Shell
@@ -12,8 +12,9 @@ from shell import Shell
 class CommandsTest(unittest.TestCase):
     """Проверка встроенных команд."""
 
-    def setUp(self):
-        """Создаёт оболочку без лога."""
+    def __init__(self, method_name="runTest"):
+        """Создаёт оболочку без лога (новую для каждого теста)."""
+        super().__init__(method_name)
         self.shell = Shell(Config(vfs_path="/tmp/myvfs"))
 
     def test_ls_prints_args(self):
@@ -84,16 +85,14 @@ class ConfigTest(unittest.TestCase):
 class ScriptAndLogTest(unittest.TestCase):
     """Проверка стартовых скриптов и XML-лога."""
 
-    def setUp(self):
-        """Создаёт временную папку."""
+    def __init__(self, method_name="runTest"):
+        """Создаёт временную папку и оболочку для каждого теста."""
+        super().__init__(method_name)
         self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
         self.log_path = os.path.join(self.tmp.name, "log.xml")
         self.shell = Shell(Config(log_path=self.log_path))
         self.lines = []
-
-    def tearDown(self):
-        """Удаляет временную папку."""
-        self.tmp.cleanup()
 
     def _script(self, text):
         """Записывает текст скрипта во временный файл."""
@@ -125,7 +124,7 @@ class ScriptAndLogTest(unittest.TestCase):
         """Каждый вызов команды пишется в XML с датой и временем."""
         self.shell.execute('cd "a b"')
         self.shell.execute("foo")
-        events = ET.parse(self.log_path).getroot().findall("event")
+        events = element_tree.parse(self.log_path).getroot().findall("event")
         self.assertEqual(len(events), 2)
         self.assertEqual(events[0].findtext("command"), "cd")
         self.assertEqual(events[0].findtext("args/arg"), "a b")
